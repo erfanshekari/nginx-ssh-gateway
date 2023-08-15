@@ -1,0 +1,34 @@
+version: "3.9"
+
+networks:
+  network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.150.0.0/16
+          gateway: 10.150.0.1
+
+
+services:
+  gateway:
+    build:
+      context: .
+      network: host
+    command: sh /gateway/start.sh
+    container_name: gateway
+    restart: always
+    env_file: .env
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
+      - net.ipv6.conf.default.disable_ipv6=1
+      - net.ipv6.conf.lo.disable_ipv6=1
+    networks:
+      network:
+        ipv4_address: 10.150.0.2
+    volumes:
+      - .nginx:/etc/nginx/nginx.conf
+
+    

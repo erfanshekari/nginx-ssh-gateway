@@ -1,0 +1,20 @@
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
+
+events {
+        worker_connections 768;
+        # multi_accept on;
+}
+
+stream {
+    upstream back_server {
+        server 8.8.8.8:53;
+    }
+
+    server {
+        listen 5300;
+        proxy_pass back_server;
+    }
+}
